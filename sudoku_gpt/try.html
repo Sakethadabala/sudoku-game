@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3x3 Sudoku</title>
+    <link rel="stylesheet" href="try.css">
+</head>
+
+<body>
+    <!-- Login Section -->
+    <div class="auth-wrapper" id="login-section">
+        <div class="login-card" role="form" aria-labelledby="login-title">
+            <!-- Animated math logo: CM -->
+            <div class="logo-wrapper" aria-hidden="false">
+                <svg class="logo-svg" viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" role="img"
+                    aria-label="CM logo">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="#7b6cff">
+                                <animate attributeName="stop-color" dur="6s" repeatCount="indefinite"
+                                    values="#7b6cff;#00d4ff;#ffd166;#7b6cff" />
+                            </stop>
+                            <stop offset="100%" stop-color="#00d4ff">
+                                <animate attributeName="stop-color" dur="6s" repeatCount="indefinite"
+                                    values="#00d4ff;#ffd166;#7b6cff;#00d4ff" />
+                            </stop>
+                        </linearGradient>
+                        <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="6" result="b" />
+                            <feMerge>
+                                <feMergeNode in="b" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Orbiting math glyphs -->
+                    <g class="orbits" transform="translate(180,60)">
+                        <text class="orbit orbit1" x="-120" y="-6">π</text>
+                        <text class="orbit orbit2" x="120" y="-6">Σ</text>
+                        <text class="orbit orbit3" x="-40" y="-64">√</text>
+                        <text class="orbit orbit4" x="40" y="64">∞</text>
+                        <text class="orbit orbit5" x="-160" y="30">∑</text>
+                        <text class="orbit orbit6" x="160" y="30">θ</text>
+                    </g>
+
+                    <!-- Big CM text with animated stroke & gradient fill -->
+                    <g filter="url(#softGlow)">
+                        <text class="logo-text stroke" x="50%" y="64" text-anchor="middle">CM</text>
+                        <text class="logo-text fill" x="50%" y="64" text-anchor="middle">CM</text>
+                    </g>
+                </svg>
+            </div>
+            <h2 id="login-title">Welcome to Sudoku by CM </h2>
+            <p class="subtitle">Sign in to play Sudoku 3x3</p>
+
+            <div class="form">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" />
+                <div id="username-error" class="field-error" aria-live="polite"></div>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" />
+                <div id="password-error" class="field-error" aria-live="polite"></div>
+
+                <div class="buttons">
+                    <button class="btn primary" id="login-btn">Login</button>
+                    <button class="btn ghost" id="register-btn">Register</button>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button class="link-btn">Forgot password?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Section (Initially Hidden) -->
+    <div class="game-container hidden" id="game-section">
+        <!-- Stats and Leaderboard Section -->
+        <div class="leaderboard" id="leaderboard">
+            <div class="stats-tabs">
+                <button class="tab-btn active" data-tab="rankings">Rankings</button>
+                <button class="tab-btn" data-tab="history">History</button>
+                <button class="tab-btn" data-tab="stats">Stats</button>
+            </div>
+
+            <!-- Rankings Tab -->
+            <div class="tab-content active" id="rankings-tab">
+                <h3>Top Players</h3>
+                <div class="leaderboard-content">
+                    <div class="leaderboard-header">
+                        <span>Rank</span>
+                        <span>Player</span>
+                        <span>Best Time</span>
+                    </div>
+                    <div id="leaderboard-list">
+                        <!-- Rankings will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-content" id="history-tab">
+                <h3>Recent Games</h3>
+                <div id="game-history">
+                    <!-- Game history will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- Stats Tab -->
+            <div class="tab-content" id="stats-tab">
+                <h3>Statistics</h3>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-label">Fastest Time</div>
+                        <div id="fastest-time" class="stat-value">--:--</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Games Played</div>
+                        <div id="games-played" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Win Rate</div>
+                        <div id="win-rate" class="stat-value">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Average Time</div>
+                        <div id="avg-time" class="stat-value">--:--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h1>3x3 Sudoku</h1>
+
+        <div class="game-board">
+            <!-- 3x3 Sudoku grid -->
+            <div class="grid">
+                <div class="cell" data-cell="0-0"></div>
+                <div class="cell" data-cell="0-1"></div>
+                <div class="cell" data-cell="0-2"></div>
+                <div class="cell" data-cell="1-0"></div>
+                <div class="cell" data-cell="1-1"></div>
+                <div class="cell" data-cell="1-2"></div>
+                <div class="cell" data-cell="2-0"></div>
+                <div class="cell" data-cell="2-1"></div>
+                <div class="cell" data-cell="2-2"></div>
+            </div>
+
+            <!-- Number selection buttons -->
+            <div class="number-buttons">
+                <button class="number" data-number="1">1</button>
+                <button class="number" data-number="2">2</button>
+                <button class="number" data-number="3">3</button>
+            </div>
+
+            <!-- Game controls -->
+            <div class="controls">
+                <button id="check-btn">Check Solution</button>
+                <button id="reset-btn">Reset Grid</button>
+                <button id="logout-btn">Logout</button>
+            </div>
+
+            <!-- Timer and Score display -->
+            <div class="game-stats">
+                <div id="currentTime">0:00</div>
+                <div id="bestTime">No best time yet</div>
+            </div>
+
+            <!-- Message display -->
+            <div id="message" class="message"></div>
+            <!-- Math celebration overlay -->
+            <div id="math-celebration" class="math-celebration hidden" aria-hidden="true"></div>
+            <!-- Welcome back overlay -->
+            <div id="welcome-overlay" class="welcome-overlay hidden" aria-hidden="true">
+                <div class="welcome-box" role="status" aria-live="polite"></div>
+            </div>
+            <!-- High-score popup -->
+            <div id="highscore-popup" class="highscore-popup hidden" aria-hidden="true">
+                <div class="highscore-box">
+                    <div class="highscore-emoji" aria-hidden="true">🎉</div>
+                    <div class="highscore-text">
+                        <div class="highscore-title">New High Score!</div>
+                        <div class="highscore-sub" id="highscore-time">00:00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="try.js"></script>
+</body>
+
+</html>
